@@ -4,11 +4,63 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: python3.9
+  environment:
+    URL_TABLE:
+      Ref: UrlTable
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:DescribeTable
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - cognito-idp:*
+          Resource: "*"
 
 functions:
-  hello:
-    handler: handler.hello
+  create_url_shortener:
+    handler: src.handlers.url_handler.create_url_shorten_handler
     events:
-      - httpApi:
-          path: /
-          method: get
+      - http:
+          path: url_shortener
+          method: post
+          cors: true
+  retrieve_url_shortener:
+    handler: src.handlers.url_handler.retrieve_url_shorten_handler
+    events:
+      - http:
+          path: url_shortener
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    UrlTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: url_id
+            AttributeType: N
+          - AttributeName: url_name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: url_id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: url_name_index
+            KeySchema:
+              - AttributeName: url_name
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+plugins:
+  - serverless-python-requirements
