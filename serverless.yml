@@ -50,16 +50,16 @@ resources:
         AttributeDefinitions:
           - AttributeName: url_id
             AttributeType: N
-          - AttributeName: url_name
+          - AttributeName: url_path
             AttributeType: S
         KeySchema:
           - AttributeName: url_id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
-          - IndexName: url_name_index
+          - IndexName: url_path_index
             KeySchema:
-              - AttributeName: url_name
+              - AttributeName: url_path
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
