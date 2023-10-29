@@ -15,7 +15,9 @@ def create_url_shorten_handler(event, context, conf_svc: ConfigService, logger: 
 
 
 @ResponseService.pretty_response
-def retrieve_url_shorten_handler(event, context, conf_svc: ConfigService, logger: Logger):
+def retrieve_url_shorten_handler(
+    event, context, conf_svc: ConfigService, logger: Logger
+):
     url_controller = UrlController(_conf_svc=conf_svc, _event=event, _logger=logger)
     response = url_controller.retrieve_url_shorten()
     return HTTPStatus.OK, response

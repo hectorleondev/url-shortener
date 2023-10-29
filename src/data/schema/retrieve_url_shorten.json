@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "retrieve_url_shorten",
+  "type": "object",
+  "properties": {
+    "queryStringParameters":
+    {
+      "type": "object",
+      "properties": {
+         "url":{"type": "string",  "format": "uri", "pattern": "^(https?|http?)://", "minLength": 1, "maxLength": 255}
+      },
+      "required": [
+        "url"
+      ]
+    }
+  },
+  "required": [
+    "queryStringParameters"
+  ]
+}

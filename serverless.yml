@@ -7,6 +7,7 @@ provider:
   environment:
     URL_TABLE:
       Ref: UrlTable
+    LOGGER_SERVICE_NAME: ${self:service}-logger
   iam:
     role:
       statements:
@@ -38,7 +39,7 @@ functions:
     events:
       - http:
           path: url_shortener
-          method: post
+          method: get
           cors: true
 
 resources:
