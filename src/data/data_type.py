@@ -8,4 +8,4 @@ from dataclasses_json import LetterCase, dataclass_json
 @dataclass
 class URLRequest:
     url: str
-    title: Optional[str]
+    title: Optional[str] = None
