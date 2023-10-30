@@ -3,6 +3,7 @@ from typing import Any
 
 from aws_lambda_powertools import Logger
 
+from src.data.data_type import URLRequest
 from src.data.exceptions import BadRequestException
 from src.services.config import ConfigService
 from src.services.db import get_url_by_path, save_url, get_url
@@ -27,12 +28,13 @@ class UrlController:
 
         validate_event(body, "create_url_shorten")
 
-        url_data = get_url_by_path(body.get("url"))
-        self.logger.info({"URL DATA": url_data})
+        data = URLRequest.from_dict(body)
+
+        url_data = get_url_by_path(data.url)
 
         if not url_data:
             url_id = generate_id()
-            save_url(url_id, body.get("url"), body.get("title"))
+            save_url(url_id, data.url, data.title)
         else:
             url_id = url_data[0].url_id
         response = {
