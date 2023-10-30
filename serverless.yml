@@ -15,12 +15,9 @@ provider:
         - Effect: Allow
           Action:
             - dynamodb:Query
-            - dynamodb:Scan
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-            - dynamodb:DescribeTable
           Resource: "*"
         - Effect: Allow
           Action:
@@ -28,18 +25,18 @@ provider:
           Resource: "*"
 
 functions:
-  create_url_shortener:
-    handler: src.handlers.url_handler.create_url_shorten_handler
+  create_shortcode:
+    handler: src.handlers.url_handler.create_shortcode_handler
     events:
       - http:
-          path: url_shortener
+          path: shortcode
           method: post
           cors: true
-  retrieve_url_shortener:
-    handler: src.handlers.url_handler.retrieve_url_shorten_handler
+  retrieve_shortcode:
+    handler: src.handlers.url_handler.retrieve_shortcode_handler
     events:
       - http:
-          path: url_shortener
+          path: shortcode
           method: get
           cors: true
 

@@ -8,16 +8,32 @@ from src.services.response import ResponseService
 
 
 @ResponseService.pretty_response
-def create_url_shorten_handler(event, context, conf_svc: ConfigService, logger: Logger):
+def create_shortcode_handler(event, context, conf_svc: ConfigService, logger: Logger):
+    """
+    Create new shortcode
+    :param event:
+    :param context:
+    :param conf_svc:
+    :param logger:
+    :return:
+    """
     url_controller = UrlController(_conf_svc=conf_svc, _event=event, _logger=logger)
-    response = url_controller.create_url_shorten()
+    response = url_controller.create_shortcode()
     return HTTPStatus.CREATED, response
 
 
 @ResponseService.pretty_response
-def retrieve_url_shorten_handler(
+def retrieve_shortcode_handler(
     event, context, conf_svc: ConfigService, logger: Logger
 ):
+    """
+    Retrieve url data from shortcode
+    :param event:
+    :param context:
+    :param conf_svc:
+    :param logger:
+    :return:
+    """
     url_controller = UrlController(_conf_svc=conf_svc, _event=event, _logger=logger)
-    response = url_controller.retrieve_url_shorten()
+    response = url_controller.retrieve_shortcode()
     return HTTPStatus.OK, response

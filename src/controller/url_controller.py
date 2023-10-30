@@ -16,7 +16,11 @@ class UrlController:
         self.logger = _logger
         self.event = _event
 
-    def create_url_shorten(self):
+    def create_shortcode(self):
+        """
+        Save new record in table and create new shortcode
+        :return:
+        """
         self.logger.info({"message": "Event information", "event_info": self.event})
 
         body = {} if not self.event.get("body") else json.loads(self.event.get("body"))
@@ -36,7 +40,11 @@ class UrlController:
         }
         return response
 
-    def retrieve_url_shorten(self):
+    def retrieve_shortcode(self):
+        """
+        Retrieve url data from shortcode
+        :return:
+        """
         self.logger.info({"message": "Event information", "event_info": self.event})
 
         validate_event(self.event, "retrieve_url_shorten")
