@@ -62,6 +62,5 @@ class UrlController:
         return {
             "url": url_data.url_path,
             "title": url_data.url_title,
-            "created_at": url_data.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            "created_at": url_data.created_at.strftime("%Y-%m-%d %H:%M:%S"),
         }
-

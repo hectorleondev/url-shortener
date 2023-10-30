@@ -23,9 +23,7 @@ def create_shortcode_handler(event, context, conf_svc: ConfigService, logger: Lo
 
 
 @ResponseService.pretty_response
-def retrieve_shortcode_handler(
-    event, context, conf_svc: ConfigService, logger: Logger
-):
+def retrieve_shortcode_handler(event, context, conf_svc: ConfigService, logger: Logger):
     """
     Retrieve url data from shortcode
     :param event:

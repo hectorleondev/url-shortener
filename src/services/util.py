@@ -48,5 +48,5 @@ def generate_id() -> int:
     current_date = datetime.now()
     timestamp = int(current_date.strftime("%Y%m%d%H%M%S"))
 
-    random_chars = ''.join(random.choices(string.digits, k=9))
+    random_chars = "".join(random.choices(string.digits, k=9))
     return timestamp + int(random_chars)
