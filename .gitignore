@@ -43,4 +43,7 @@ var/
 .idea/**/gradle.xml
 .idea/**/libraries
 
+.coverage
+.coverage.*
+
 node_modules/
