@@ -1,6 +1,6 @@
 {
    "$schema":"http://json-schema.org/draft-04/schema#",
-   "title":"create_url_shorten",
+   "title":"create_shortcode",
    "type":"object",
    "properties":{
       "url":{"type": "string",  "format": "uri", "pattern": "^(https?|http?)://", "minLength": 1, "maxLength": 255},

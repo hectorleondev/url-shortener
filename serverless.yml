@@ -32,6 +32,13 @@ functions:
           path: shortcode
           method: post
           cors: true
+  retrieve_shortcode:
+    handler: src.handlers.url_handler.retrieve_shortcode_handler
+    events:
+      - http:
+          path: shortcode
+          method: get
+          cors: true
   retrieve_url_data:
     handler: src.handlers.url_handler.retrieve_url_data_handler
     events:

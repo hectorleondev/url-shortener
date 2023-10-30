@@ -35,3 +35,18 @@ def retrieve_url_data_handler(event, context, conf_svc: ConfigService, logger: L
     url_controller = UrlController(_conf_svc=conf_svc, _event=event, _logger=logger)
     response = url_controller.retrieve_url_data()
     return HTTPStatus.OK, response
+
+
+@ResponseService.pretty_response
+def retrieve_shortcode_handler(event, context, conf_svc: ConfigService, logger: Logger):
+    """
+    Retrieve shortcode from exiting url
+    :param event:
+    :param context:
+    :param conf_svc:
+    :param logger:
+    :return:
+    """
+    url_controller = UrlController(_conf_svc=conf_svc, _event=event, _logger=logger)
+    response = url_controller.retrieve_shortcode()
+    return HTTPStatus.OK, response

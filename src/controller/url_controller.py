@@ -26,17 +26,41 @@ class UrlController:
 
         body = get_body_content(self.event)
 
-        validate_event(body, "create_url_shorten")
+        validate_event(body, "create_shortcode")
 
         data = URLRequest.from_dict(body)
 
         url_data = get_url_by_path(data.url)
 
+        if url_data:
+            raise BadRequestException("The url is already used for another short link")
+
+        url_id = generate_id()
+        save_url(url_id, data.url, data.title)
+
+        response = {
+            "shortcode": to_base62(url_id),
+        }
+        return response
+
+    def retrieve_shortcode(self):
+        """
+        Retrieve shortcode from existing url
+        :return:
+        """
+        self.logger.info({"message": "Event information", "event_info": self.event})
+
+        validate_event(self.event, "retrieve_shortcode")
+
+        url = self.event.get("queryStringParameters").get("url")
+
+        url_data = get_url_by_path(url)
+
         if not url_data:
-            url_id = generate_id()
-            save_url(url_id, data.url, data.title)
-        else:
-            url_id = url_data[0].url_id
+            raise BadRequestException("The url not found")
+
+        url_id = url_data[0].url_id
+
         response = {
             "shortcode": to_base62(url_id),
         }
@@ -49,7 +73,7 @@ class UrlController:
         """
         self.logger.info({"message": "Event information", "event_info": self.event})
 
-        validate_event(self.event, "retrieve_url_shorten")
+        validate_event(self.event, "retrieve_url")
 
         shortcode = self.event.get("queryStringParameters").get("shortcode")
 
