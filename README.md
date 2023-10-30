@@ -1,101 +1,92 @@
-<!--
-title: 'AWS Simple HTTP Endpoint example in Python'
-description: 'This template demonstrates how to make a simple HTTP API with Python running on AWS Lambda and API Gateway using the Serverless Framework.'
-layout: Doc
-framework: v3
-platform: AWS
-language: python
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+# Url Shortener Api
 
-# Serverless Framework Python HTTP API on AWS
+This template includes samples how to install the application and documentation about the endpoints.
 
-This template demonstrates how to make a simple HTTP API with Python running on AWS Lambda and API Gateway using the Serverless Framework.
+First of all I think that lambdas and API Gateway is the best approach because it is not part challenge that we need to handle horizontal scaling, minimum number of  active instances, for those requirement we need other solution like docker, ec2 instances.
 
-This template does not include any kind of persistence (database). For more advanced examples, check out the [serverless/examples repository](https://github.com/serverless/examples/)  which includes DynamoDB, Mongo, Fauna and other examples.
+Second I am using Serverless Framework because it is a easy way to interact with aws services and deploy my solution. 
 
-## Usage
+Finally I decided to use a NoSQL solution like DynamoDB instead of Sequel database. Because
+is an small project and there are not relations with other tables. If we want to add more complexity like user, roles probably we need to use a sequel database like Postgress or MySQL.
 
-### Deployment
+## Environment Information
+Domain: https://5c4anzxltl.execute-api.us-east-1.amazonaws.com
 
+
+## Install
 ```
+Setup your amazon credential in your credentials file [official documentation](https://www.serverless.com/framework/docs/providers/aws/guide/credentials/)
+
+Run the following command
+
+$ git clone https://github.com/hectorleondev/url-shortener.git
+$ cd url-shortener
+$ npm install
 $ serverless deploy
+
+Deploying calculator-api to stage dev (us-east-1)
+
+✔ Service deployed to stack url-shortener-dev (170s)
+
 ```
 
-After deploying, you should see output similar to:
+## Endpoints
+
+### Create new shortcode
 
 ```bash
-Deploying aws-python-http-api-project to stage dev (us-east-1)
+curl --location 'https://5c4anzxltl.execute-api.us-east-1.amazonaws.com/dev/shortcode' \
+--header 'Content-Type: application/json' \
+--data '{
+    "url": "<URL>",
+    "title": "<TITLE>"
+}'
 
-✔ Service deployed to stack aws-python-http-api-project-dev (140s)
-
-endpoint: GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
-functions:
-  hello: aws-python-http-api-project-dev-hello (2.3 kB)
-```
-
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [http event docs](https://www.serverless.com/framework/docs/providers/aws/events/apigateway/).
-
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
-```
-
-Which should result in response similar to the following (removed `input` content for brevity):
-
-```json
+response 
 {
-  "message": "Go Serverless v3.0! Your function executed successfully!",
-  "input": {
-    ...
-  }
+    "shortcode": "XXX1AA2"
+}
+'
+```
+
+_Note_: URL field is required but TITLE is optional
+
+
+### Get URL data from shortcode
+```bash
+curl --location 'https://5c4anzxltl.execute-api.us-east-1.amazonaws.com/dev/url?shortcode=<SHORTCODE>'
+
+response
+{
+    "url": "https://test.com/blog/test.html",
+    "title": "Title link",
+    "created_at": "2000-01-01 00:00:00"
 }
 ```
+_Note_: SHORTCODE param is required
 
-### Local development
+### Get existing shortcode from url
 
-You can invoke your function locally by using the following command:
 
 ```bash
-serverless invoke local --function hello
-```
+curl --location 'https://5c4anzxltl.execute-api.us-east-1.amazonaws.com/dev/shortcode?url=<URL>'
 
-Which should result in response similar to the following:
-
-```
+Response
 {
-  "statusCode": 200,
-  "body": "{\n  \"message\": \"Go Serverless v3.0! Your function executed successfully!\",\n  \"input\": \"\"\n}"
+    "shortcode": "XXX1AA2"
 }
 ```
+_Note_: URL param is required.
+Also I added that endpoint because if the user try to create new shortcode with a registered url.
+I think that the solution must have other endpoint to handle that cases
 
-Alternatively, it is also possible to emulate API Gateway and Lambda locally by using `serverless-offline` plugin. In order to do that, execute the following command:
 
+## Unit test
 ```bash
-serverless plugin install -n serverless-offline
-```
-
-It will add the `serverless-offline` plugin to `devDependencies` in `package.json` file as well as will add it to `plugins` in `serverless.yml`.
-
-After installation, you can start local emulation with:
+Run the following command in root path
+$ pip3 install -r requirements_test.txt
+$ pytest tests --cov=src/
 
 ```
-serverless offline
-```
 
-To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
 
-### Bundling dependencies
-
-In case you would like to include 3rd party dependencies, you will need to use a plugin called `serverless-python-requirements`. You can set it up by running the following command:
-
-```bash
-serverless plugin install -n serverless-python-requirements
-```
-
-Running the above will automatically add `serverless-python-requirements` to `plugins` section in your `serverless.yml` file and add it as a `devDependency` to `package.json` file. The `package.json` file will be automatically created if it doesn't exist beforehand. Now you will be able to add your dependencies to `requirements.txt` file (`Pipfile` and `pyproject.toml` is also supported but requires additional configuration) and they will be automatically injected to Lambda package during build process. For more details about the plugin's configuration, please refer to [official documentation](https://github.com/UnitedIncome/serverless-python-requirements).
