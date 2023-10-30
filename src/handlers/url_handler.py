@@ -23,7 +23,7 @@ def create_shortcode_handler(event, context, conf_svc: ConfigService, logger: Lo
 
 
 @ResponseService.pretty_response
-def retrieve_shortcode_handler(event, context, conf_svc: ConfigService, logger: Logger):
+def retrieve_url_data_handler(event, context, conf_svc: ConfigService, logger: Logger):
     """
     Retrieve url data from shortcode
     :param event:
@@ -33,5 +33,5 @@ def retrieve_shortcode_handler(event, context, conf_svc: ConfigService, logger: 
     :return:
     """
     url_controller = UrlController(_conf_svc=conf_svc, _event=event, _logger=logger)
-    response = url_controller.retrieve_shortcode()
+    response = url_controller.retrieve_url_data()
     return HTTPStatus.OK, response

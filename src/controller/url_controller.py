@@ -42,7 +42,7 @@ class UrlController:
         }
         return response
 
-    def retrieve_shortcode(self):
+    def retrieve_url_data(self):
         """
         Retrieve url data from shortcode
         :return:
