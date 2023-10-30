@@ -19,7 +19,7 @@ class UrlModel(Model):
     """
 
     class Meta:
-        table_name = os.getenv("URL_TABLE")
+        table_name = os.getenv("URL_TABLE", "url_table")
         region = os.getenv("REGION", "us-east-1")
 
     url_id = NumberAttribute(hash_key=True)
