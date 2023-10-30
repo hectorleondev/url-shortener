@@ -50,3 +50,12 @@ def generate_id() -> int:
 
     random_chars = "".join(random.choices(string.digits, k=9))
     return timestamp + int(random_chars)
+
+
+def get_body_content(event: dict) -> dict:
+    """
+    Get body content from event
+    :param event:
+    :return:
+    """
+    return {} if not event.get("body") else json.loads(event.get("body"))

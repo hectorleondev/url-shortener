@@ -7,7 +7,7 @@ from src.data.data_type import URLRequest
 from src.data.exceptions import BadRequestException
 from src.services.config import ConfigService
 from src.services.db import get_url_by_path, save_url, get_url
-from src.services.util import to_base62, generate_id, to_base10
+from src.services.util import to_base62, generate_id, to_base10, get_body_content
 from src.services.validation import validate_event
 
 
@@ -24,7 +24,7 @@ class UrlController:
         """
         self.logger.info({"message": "Event information", "event_info": self.event})
 
-        body = {} if not self.event.get("body") else json.loads(self.event.get("body"))
+        body = get_body_content(self.event)
 
         validate_event(body, "create_url_shorten")
 
