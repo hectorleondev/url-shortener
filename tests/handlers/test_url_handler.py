@@ -46,8 +46,7 @@ class TestUrlHandler:
         create_table_mock()
         _event = {
             "body": json.dumps({
-                "url": "https://www.xxxx.com/blog/test.html",
-                "title": "title link"
+                "url": "https://www.xxxx.com/blog/test.html"
             })
         }
 
@@ -81,3 +80,74 @@ class TestUrlHandler:
         assert response["statusCode"] == 201
         body = json.loads(response["body"])
         assert body["shortcode"] == expected["shortcode"]
+
+    def test_invalid_url_error(self, mocker):
+        from src.handlers import url_handler
+
+        _event = {
+            "body": json.dumps({
+                "url": "http/www.xxxx.com/blog/test.html",
+                "title": "title link"
+            })
+        }
+        response = url_handler.create_shortcode_handler(_event, None)
+        assert response["statusCode"] == 400
+
+    @mock_dynamodb2
+    def test_retrieve_url_data(self, mocker):
+        from src.handlers import url_handler
+
+        expected = {
+            "url": "https://www.xxxx.com/blog/test.html",
+            "title": "title link"
+        }
+        create_table_mock()
+        add_new_record({
+            "id": 1111111,
+            "url": "https://www.xxxx.com/blog/test.html",
+            "title": "title link"
+        })
+
+        _event = {
+            "queryStringParameters": {
+                "shortcode": "xxxxx"
+            }
+        }
+
+        mocker.patch("src.controller.url_controller.to_base10", return_value=1111111)
+
+        response = url_handler.retrieve_url_data_handler(_event, None)
+        assert response["statusCode"] == 200
+        body = json.loads(response["body"])
+        assert body["url"] == expected["url"]
+        assert body["title"] == expected["title"]
+        assert "created_at" in body
+
+    @mock_dynamodb2
+    def test_invalid_shortcode_processing_error(self, mocker):
+        from src.handlers import url_handler
+
+        create_table_mock()
+        expected = {
+            "message": "The shortcode is invalid",
+        }
+
+        _event = {
+            "queryStringParameters": {
+                "shortcode": "AF643$"
+            }
+        }
+
+        response = url_handler.retrieve_url_data_handler(_event, None)
+        assert response["statusCode"] == 400
+        body = json.loads(response["body"])
+        assert body == expected
+
+    def test_invalid_shortcode_validation_error(self, mocker):
+        from src.handlers import url_handler
+        _event = {
+            "queryStringParameters": {}
+        }
+
+        response = url_handler.retrieve_url_data_handler(_event, None)
+        assert response["statusCode"] == 400
