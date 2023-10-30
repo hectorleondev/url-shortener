@@ -3,7 +3,7 @@ from typing import Optional
 from src.data.model.url import UrlModel
 
 
-def save_url(url_id: str, url_path: str, url_title: str):
+def save_url(url_id: int, url_path: str, url_title: str):
     """
     Save new url
     :param url_id:
@@ -18,7 +18,7 @@ def save_url(url_id: str, url_path: str, url_title: str):
     url_model.save()
 
 
-def get_url(url_id: str) -> Optional[UrlModel]:
+def get_url(url_id: int) -> Optional[UrlModel]:
     """
     Get url
     :param url_id:
@@ -30,13 +30,13 @@ def get_url(url_id: str) -> Optional[UrlModel]:
         return None
 
 
-def get_url_by_path(url_path: str) -> Optional[UrlModel]:
+def get_url_by_path(url_path: str) -> list:
     """
     Get url
     :param url_path:
     :return:
     """
     try:
-        return UrlModel.url_path_index.get(hash_key=url_path)
+        return list(UrlModel.url_path_index.query(hash_key=url_path))
     except UrlModel.DoesNotExist:
-        return None
+        return []

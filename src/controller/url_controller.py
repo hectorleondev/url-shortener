@@ -3,7 +3,10 @@ from typing import Any
 
 from aws_lambda_powertools import Logger
 
+from src.data.exceptions import BadRequestException
 from src.services.config import ConfigService
+from src.services.db import get_url_by_path, save_url, get_url
+from src.services.util import to_base62, generate_id, to_base10
 from src.services.validation import validate_event
 
 
@@ -20,11 +23,35 @@ class UrlController:
 
         validate_event(body, "create_url_shorten")
 
-        return {"message": body}
+        url_data = get_url_by_path(body.get("url"))
+        self.logger.info({"URL DATA": url_data})
+
+        if not url_data:
+            url_id = generate_id()
+            save_url(url_id, body.get("url"), body.get("title"))
+        else:
+            url_id = url_data[0].url_id
+        response = {
+            "shortcode": to_base62(url_id),
+        }
+        return response
 
     def retrieve_url_shorten(self):
         self.logger.info({"message": "Event information", "event_info": self.event})
 
         validate_event(self.event, "retrieve_url_shorten")
 
-        return {"message": self.event["queryStringParameters"]}
+        shortcode = self.event.get("queryStringParameters").get("shortcode")
+
+        url_id = to_base10(shortcode)
+
+        url_data = get_url(url_id)
+        if not url_data:
+            raise BadRequestException("The shortcode is invalid")
+
+        return {
+            "url": url_data.url_path,
+            "title": url_data.url_title,
+            "created_at": url_data.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
+

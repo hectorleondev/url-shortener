@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pynamodb.indexes import GlobalSecondaryIndex, AllProjection
 from pynamodb.models import Model
-from pynamodb.attributes import UnicodeAttribute, UTCDateTimeAttribute
+from pynamodb.attributes import UTCDateTimeAttribute, NumberAttribute, UnicodeAttribute
 
 
 class UrlPathIndex(GlobalSecondaryIndex):
@@ -22,9 +22,9 @@ class UrlModel(Model):
         table_name = os.getenv("URL_TABLE")
         region = os.getenv("REGION", "us-east-1")
 
-    url_id = UnicodeAttribute(hash_key=True)
+    url_id = NumberAttribute(hash_key=True)
     url_path = UnicodeAttribute()
-    url_title = UnicodeAttribute()
+    url_title = UnicodeAttribute(null=True)
     created_at = UTCDateTimeAttribute(null=False, default=datetime.now())
 
     url_path_index = UrlPathIndex()

@@ -4,6 +4,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: python3.9
+  stage: dev
   environment:
     URL_TABLE:
       Ref: UrlTable
